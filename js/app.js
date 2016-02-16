@@ -1,6 +1,9 @@
 var X_INCREMENT = 101;
 var Y_INCREMENT = 101;
 
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 // Enemies our player must avoid
 var Enemy = function() {
      // Variables applied to each of our instances go here,
@@ -16,12 +19,30 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
 };
 
+Enemy.prototype.collisions = function(object) {
+    return (this.x < object.x + object.width  && this.x + this.width  > object.x &&
+        this.y < object.y + object.height && this.y + this.height > object.y);    
+};
+
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+
+    this.x += (X_INCREMENT * dt * this.speed);
+    //console.log('enemy x = ', this.x, 'enemy y = ', this.y);    
+    if(this.x > 480){
+        var locations = [80.8 , 161.6 , 242.40];
+        this.speed = Math.random() * 5;
+        this.x = 0;
+        this.y = locations[getRandomInt(0,2)];
+        
+    }
+    if(this.collisions(player)){
+        player.reset();
+    }
 };
 
 // Draw the enemy on the screen, required method for game
